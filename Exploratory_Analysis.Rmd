@@ -1,0 +1,121 @@
+---
+title: "Exploratory_Analysis"
+author: "Alex Wei"
+date: "10/8/2021"
+Project: "Heart_Failure_Project"
+output: html_document
+---
+
+Complete an initial round of exploratory analyses on your data that would be relevant to your plan and responses above, and include any plots, summaries, code and output.  Please include exploratory analysis for outcome(s) of continuous form however/wherever possible even if your ultimate goals/questions involve a different form of outcome data such as binary, polytomous, etc.  (You may consider this initial analysis as a potential sub-analysis later on.)  
+
+```{r}
+dat <- read.csv(file = 'heart_failure_clinical_records_dataset.csv')
+head(dat)
+```
+
+### Mean and Standard Deviation
+
+Mean and deviation of variable age
+```{r}
+mean(dat$age)
+sd(dat$age)
+```
+
+Mean and deviation of variable creatinine phosphokinase concentration
+```{r}
+mean(dat$creatinine_phosphokinase)
+sd(dat$creatinine_phosphokinase)
+```
+
+Mean and deviation of variable ejection fraction
+```{r}
+mean(dat$ejection_fraction)
+sd(dat$ejection_fraction)
+```
+
+Mean and deviation of variable platelets concentration
+```{r}
+mean(dat$platelets)
+sd(dat$platelets)
+```
+
+Mean and deviation of variable serum creatine concentration
+```{r}
+mean(dat$serum_creatinine)
+sd(dat$serum_creatinine)
+```
+
+Mean and deviation of variable serum sodium concentration
+```{r}
+mean(dat$serum_sodium)
+sd(dat$serum_sodium)
+```
+
+### Normality Test
+
+```{r}
+library(ggplot2)
+library(gridExtra)
+
+age_dis <- ggplot(dat, aes(x=age)) + 
+              geom_histogram(bins=10,colour="black", fill="white")
+
+crea_pho_dis <- ggplot(dat, aes(x=creatinine_phosphokinase)) + 
+                  geom_histogram(bins=30,colour="black", fill="white")
+
+ef_dis <- ggplot(dat, aes(x=ejection_fraction)) + 
+            geom_histogram(bins=10,colour="black", fill="white")
+
+plate_dis <- ggplot(dat, aes(x=platelets)) + 
+                geom_histogram(bins=10,colour="black", fill="white")
+
+s_crea_dis <- ggplot(dat, aes(x=serum_creatinine)) + 
+                geom_histogram(bins=20,colour="black", fill="white")
+
+s_sodium_dis <- ggplot(dat, aes(x=serum_sodium)) + 
+                   geom_histogram(bins=10,colour="black", fill="white")
+
+grid.arrange(age_dis,crea_pho_dis,ef_dis,plate_dis,s_crea_dis,s_sodium_dis)
+```
+
+### Boxplot
+
+```{r}
+age_box <- boxplot(dat$age, ylab = "Age")
+```
+
+```{r}
+cp_box <- boxplot(dat$creatinine_phosphokinase, ylab = "creatinine_phosphokinase")
+```
+
+```{r}
+ef_box <- boxplot(dat$ejection_fraction, ylab = "ejection_fraction")
+```
+
+```{r}
+platelets_box <- boxplot(dat$platelets, ylab = "platelets")
+```
+
+```{r}
+sc_box <- boxplot(dat$serum_creatinine, ylab = "serum_creatinine")
+```
+
+```{r}
+ss_box <- boxplot(dat$serum_sodium, ylab = "serum_sodium")
+```
+
+### Correlation Matrix
+
+The critical pearson correlation value for degree of freedom of 11 and p value 0.05 is 0.553.
+
+```{r}
+pearson_table <- cor(dat,method = "pearson")
+
+pearson_table
+```
+
+```{r}
+which(pearson_table > 0.553 | pearson_table < -0.553)
+```
+
+All the correlation in the table, except the diagnosis, are all smaller than the critical value, so there's no multicollinearity among the variables. There are several possible risk factors realted to death (with higher correlation with death in the matrix):age, ejection fraction and serum creatinine that worth research on.   
