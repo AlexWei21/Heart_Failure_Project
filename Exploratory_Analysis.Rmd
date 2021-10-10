@@ -5,52 +5,119 @@ date: "10/8/2021"
 Project: "Heart_Failure_Project"
 output: html_document
 ---
+```{r}
+library(dplyr)
+```
 
 Complete an initial round of exploratory analyses on your data that would be relevant to your plan and responses above, and include any plots, summaries, code and output.  Please include exploratory analysis for outcome(s) of continuous form however/wherever possible even if your ultimate goals/questions involve a different form of outcome data such as binary, polytomous, etc.  (You may consider this initial analysis as a potential sub-analysis later on.)  
 
+\newpage
+### Basic Information of the Data
+
+#### Data set
 ```{r}
 dat <- read.csv(file = 'heart_failure_clinical_records_dataset.csv')
 head(dat)
 ```
 
-### Mean and Standard Deviation
+#### Number of Variables
+```{r}
+ncol(dat)
+nrow(dat)
+```
+There are 13 variables and 299 samples in the data set.
 
-Mean and deviation of variable age
+\newpage
+### Mean and Standard Deviation of continuous variable
+
+#### Mean and deviation of variable age
 ```{r}
 mean(dat$age)
 sd(dat$age)
 ```
 
-Mean and deviation of variable creatinine phosphokinase concentration
+#### Mean and deviation of variable creatinine phosphokinase concentration
 ```{r}
 mean(dat$creatinine_phosphokinase)
 sd(dat$creatinine_phosphokinase)
 ```
 
-Mean and deviation of variable ejection fraction
+#### Mean and deviation of variable ejection fraction
 ```{r}
 mean(dat$ejection_fraction)
 sd(dat$ejection_fraction)
 ```
 
-Mean and deviation of variable platelets concentration
+#### Mean and deviation of variable platelets concentration
 ```{r}
 mean(dat$platelets)
 sd(dat$platelets)
 ```
 
-Mean and deviation of variable serum creatine concentration
+#### Mean and deviation of variable serum creatine concentration
 ```{r}
 mean(dat$serum_creatinine)
 sd(dat$serum_creatinine)
 ```
 
-Mean and deviation of variable serum sodium concentration
+#### Mean and deviation of variable serum sodium concentration
 ```{r}
 mean(dat$serum_sodium)
 sd(dat$serum_sodium)
 ```
 
+\newpage
+### Frequency of discrete variable
+
+#### Anaemia frequency
+```{r}
+nrow(dat)
+nrow(filter(dat,anaemia == 0))
+nrow(filter(dat,anaemia == 1))
+```
+There are 299 samples in the data set, 170 of them are clear with anaemia, while 129 of them have anaemia.
+
+#### Diabete frequency
+```{r}
+nrow(dat)
+nrow(filter(dat,diabetes == 0))
+nrow(filter(dat,diabetes == 1))
+```
+There are 299 samples in the data set, 174 of them are clear with diabete, while 125 of them have diabete.
+
+#### High Blood Pressure frequency
+```{r}
+nrow(dat)
+nrow(filter(dat,high_blood_pressure == 0))
+nrow(filter(dat,high_blood_pressure == 1))
+```
+There are 299 samples in the data set, 194 of them are clear with high blood pressure, while 105 of them have high blood pressure.
+
+#### Gender frequency
+```{r}
+nrow(dat)
+nrow(filter(dat,sex == 0))
+nrow(filter(dat,sex == 1))
+```
+There are 299 samples in the data set, 105 of them are female, while 194 of them are male.
+
+#### Smoking condition frequency
+```{r}
+nrow(dat)
+nrow(filter(dat,smoking == 0))
+nrow(filter(dat,smoking == 1))
+```
+There are 299 samples in the data set, 203 of them are non-smoker, while 96 of them are smoker.
+
+#### Death frequency
+```{r}
+nrow(dat)
+nrow(filter(dat,DEATH_EVENT == 0))
+nrow(filter(dat,DEATH_EVENT == 1))
+```
+There are 299 samples in the data set, 203 of them are alive during the following up period, while 96 of them died during the following up period.
+
+\newpage
 ### Normality Test
 
 ```{r}
@@ -78,32 +145,81 @@ s_sodium_dis <- ggplot(dat, aes(x=serum_sodium)) +
 grid.arrange(age_dis,crea_pho_dis,ef_dis,plate_dis,s_crea_dis,s_sodium_dis)
 ```
 
+
+#### Age QQplot
+```{r}
+qqnorm(dat$age)
+qqline(dat$age)
+```
+
+#### Creatinine Phosphokinase concentration QQplot
+```{r}
+qqnorm(dat$creatinine_phosphokinase)
+qqline(dat$creatinine_phosphokinase)
+```
+
+#### Ejection fraction QQplot
+```{r}
+qqnorm(dat$ejection_fraction)
+qqline(dat$ejection_fraction)
+```
+
+#### Platelets QQplot
+```{r}
+qqnorm(dat$platelets)
+qqline(dat$platelets)
+```
+
+#### Serum creatinine QQplot
+```{r}
+qqnorm(dat$serum_creatinine)
+qqline(dat$serum_creatinine)
+```
+
+#### Serum Sodium QQplot
+```{r}
+qqnorm(dat$serum_sodium)
+qqline(dat$serum_sodium)
+```
+
+Combine the result of the histogram and qqplot, we could see that age, ejection_fraction, platelets, and serum_sodium is relatively normally distributed, while creatinine_phosphokinase and serum_creatinine are quite not normally distributed in the data set.  
+
+
+
+\newpage
 ### Boxplot
 
+#### Age
 ```{r}
 age_box <- boxplot(dat$age, ylab = "Age")
 ```
 
+#### Creatinine Phosphokinease Concentration
 ```{r}
 cp_box <- boxplot(dat$creatinine_phosphokinase, ylab = "creatinine_phosphokinase")
 ```
 
+#### Ejection Fraction
 ```{r}
 ef_box <- boxplot(dat$ejection_fraction, ylab = "ejection_fraction")
 ```
 
+#### Plateletse Concentration
 ```{r}
 platelets_box <- boxplot(dat$platelets, ylab = "platelets")
 ```
 
+#### Serum Creatinine Concentration
 ```{r}
 sc_box <- boxplot(dat$serum_creatinine, ylab = "serum_creatinine")
 ```
 
+#### Serum Sodium Concentration
 ```{r}
 ss_box <- boxplot(dat$serum_sodium, ylab = "serum_sodium")
 ```
 
+\newpage
 ### Correlation Matrix
 
 The critical pearson correlation value for degree of freedom of 11 and p value 0.05 is 0.553.
