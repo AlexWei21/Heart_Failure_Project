@@ -1,0 +1,85 @@
+---
+title: "Survival_Analysis"
+author: "Alex Wei"
+date: "12/11/2021"
+output: html_document
+---
+
+```{r}
+library(survival)
+library(ggplot2)
+library(ggfortify)
+```
+
+
+```{r}
+dat <- read.csv("heart_failure_clinical_records_dataset.csv")
+head(dat)
+```
+
+```{r}
+km <- with(dat, Surv(time,DEATH_EVENT))
+km
+```
+
+```{r}
+km_fit <- survfit(Surv(time, DEATH_EVENT) ~ 1, data = dat)
+summary(km_fit)
+```
+```{r}
+autoplot(km_fit)
+```
+
+
+```{r}
+cox <- coxph(Surv(time, DEATH_EVENT) ~ ., data = dat)
+summary(cox)
+```
+
+```{r}
+cox.zph(cox, transform="km", terms=TRUE, singledf=FALSE, global=TRUE)
+```
+
+```{r}
+dat$age_binary <- as.factor(ifelse((dat$age>60),"Age > 60", "Age < 60"))
+km_age_fit <- survfit(Surv(time, DEATH_EVENT) ~ age_binary, data = dat)
+autoplot(km_age_fit) + ggtitle("Age Based Survival")
+```
+
+```{r}
+median(dat$ejection_fraction) # Median of ejection fraction in the data set is 38
+dat$ef_binary <- as.factor(ifelse((dat$ejection_fraction>38),"ejection_fraction > 38", "ejection_fraction < 38"))
+km_ef_fit <- survfit(Surv(time, DEATH_EVENT) ~ ef_binary, data = dat)
+autoplot(km_ef_fit) + ggtitle("Ejection Fraction Based Survival")
+```
+
+```{r}
+median(dat$serum_creatinine) # Median of the serum creatinine in the dataset is 1.1
+dat$sc_binary <- as.factor(ifelse((dat$serum_creatinine>1.1),"serum_creatinine > 1.1", "serum_creatinine < 1.1"))
+km_sc_fit <- survfit(Surv(time, DEATH_EVENT) ~ sc_binary, data = dat)
+autoplot(km_sc_fit) + ggtitle("Serum Creatinine Based Survival")
+```
+
+```{r}
+km_hbp_fit <- survfit(Surv(time, DEATH_EVENT) ~ high_blood_pressure, data = dat)
+autoplot(km_hbp_fit) + ggtitle("High Blood Pressure Based Survival")
+```
+
+```{r}
+km_anaemia_fit <- survfit(Surv(time, DEATH_EVENT) ~ anaemia, data = dat)
+autoplot(km_anaemia_fit) + ggtitle("Anaemia Based Survival")
+```
+
+```{r}
+median(dat$creatinine_phosphokinase) # Median of the creatinine phosphokinase in the dataset is 250
+dat$cp_binary <- as.factor(ifelse((dat$creatinine_phosphokinase>250),"creatinine_phosphokinase > 250", "creatinine_phosphokinase < 250"))
+km_cp_fit <- survfit(Surv(time, DEATH_EVENT) ~ cp_binary, data = dat)
+autoplot(km_cp_fit) + ggtitle("Creatinine Phosphokinase Based Survival")
+```
+
+```{r}
+aa_fit <-aareg(Surv(time, DEATH_EVENT) ~ age + creatinine_phosphokinase + anaemia + serum_creatinine + high_blood_pressure + ejection_fraction, data = dat)
+aa_fit
+autoplot(aa_fit)
+```
+
